@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +13,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+use App\Models\Message;
+use App\Events\MessageEvent;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('/messages', function (Request $request) {
+    return Message::all();
+});
+
+Route::post('/messages', function (Request $request) {
+    $message = new Message;
+    $message->username = $request->input('username');
+    $message->message = $request->input('message');
+    $message->save();
+
+    event(new MessageEvent($message->username, $message->password));
+
+    return $request->all();
 });
