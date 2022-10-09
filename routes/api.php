@@ -32,7 +32,7 @@ Route::post('/messages', function (Request $request) {
     $message->message = $request->input('message');
     $message->save();
 
-    event(new MessageEvent($message->username, $message->password));
+    event(new MessageEvent($message->username, $message->message));
 
     return $request->all();
 });
